@@ -20,9 +20,9 @@ const config = {
   database: "testDatabase",
   options: { encrypt: false },
 };
-// const db_name = "test";
-// const db_user = "devuser";
-// const db_pass = "devuser";
+// const db_name = "";
+// const db_user = "";
+// const db_pass = "";
 
 // mongoose.connect(
 //   `mongodb+srv://${db_user}:<password>@cluster0.uoidc.mongodb.net/<dbname>?retryWrites=true&w=majority`,
@@ -60,7 +60,7 @@ app.post("/login", async (req, res, next) => {
       req.logIn(user, (err) => {
         if (err) throw err;
         res.send("Successfully Authenticated");
-        console.log("Authernticated User(stored to session) : " + req.user);
+        console.log("Authernticated User(stored to session) : ", req.user);
       });
     }
   })(req, res, next);
@@ -91,8 +91,10 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/getUser", async (req, res) => {});
+app.get("/getUser", async (req, res) => {
+  res.send(req.user); //req.user stores the user session that has been authenticated
+});
 
 app.listen(apiPort, () => {
-  console.log("Auth Server started at port : " + apiPort);
+  console.log("Auth Server started at port : ", apiPort);
 });
