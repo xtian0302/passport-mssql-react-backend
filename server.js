@@ -8,11 +8,11 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const User = require("./user");
 let apiPort = 4000;
 
 const app = express();
 
+//initialize MSSQL Config
 const config = {
   user: "sa",
   password: "Password1",
@@ -20,6 +20,7 @@ const config = {
   database: "testDatabase",
   options: { encrypt: false },
 };
+
 // const db_name = "";
 // const db_user = "";
 // const db_pass = "";
@@ -39,14 +40,17 @@ const config = {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+//Cors
 app.use(
   cors({
     origin: "http://localhost:3001",
     credentials: true,
   })
 );
+//Initialize cookie secret
 app.use(session({ secret: "sectr", resave: true, saveUninitialized: true }));
 app.use(cookieParser("sectr"));
+//Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 require("./passportConfig")(passport);
@@ -60,10 +64,15 @@ app.post("/login", async (req, res, next) => {
       req.logIn(user, (err) => {
         if (err) throw err;
         res.send("Successfully Authenticated");
-        console.log("Authernticated User(stored to session) : ", req.user);
+        console.log("Authernticated User (stored to session) : ", req.user);
       });
     }
   })(req, res, next);
+});
+
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.send("logout success");
 });
 
 app.post("/register", async (req, res) => {
@@ -95,6 +104,7 @@ app.get("/getUser", async (req, res) => {
   res.send(req.user); //req.user stores the user session that has been authenticated
 });
 
+//Start Web Service
 app.listen(apiPort, () => {
   console.log("Auth Server started at port : ", apiPort);
 });

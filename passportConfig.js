@@ -37,7 +37,10 @@ module.exports = function (passport) {
     if (user instanceof Error) {
       throw user;
     } else if (user) {
-      cb(null, user);
+      const userInformation = {
+        username: user.username,
+      };
+      cb(null, userInformation);
     }
   });
 };
