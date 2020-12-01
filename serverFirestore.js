@@ -12,7 +12,11 @@ const bodyParser = require("body-parser");
 let apiPort = 4000;
 
 const app = express();
-
+console.log(
+  JSON.parse(
+    Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString("ascii")
+  )
+);
 //initialize Firestore
 admin.initializeApp({
   credential: firebaseAdminSdk.credential.cert(
