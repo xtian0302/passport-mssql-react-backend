@@ -10,14 +10,18 @@ const localStrategy = require("passport-local").Strategy;
 //   },
 //   "firestorePassport"
 // );
-admin.initializeApp({
-  credential: firebaseAdminSdk.credential.cert(
-    JSON.parse(
-      Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString("ascii")
-    )
-  ),
+admin.initializeApp(
+  {
+    credential: firebaseAdminSdk.credential.cert(
+      JSON.parse(
+        Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString(
+          "ascii"
+        )
+      )
+    ),
+  },
   "firestorePassport"
-});
+);
 const db = admin.firestore();
 
 //implement strategy
