@@ -1,6 +1,6 @@
 //const mongoose = require("mongoose");
 const admin = require("firebase-admin");
-const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
+//const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
