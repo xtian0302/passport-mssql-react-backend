@@ -12,7 +12,7 @@ const localStrategy = require("passport-local").Strategy;
 // );
 admin.initializeApp(
   {
-    credential: firebaseAdminSdk.credential.cert(
+    credential: admin.credential.cert(
       JSON.parse(
         Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString(
           "ascii"
