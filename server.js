@@ -43,12 +43,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Cors
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: ["http://10.11.140.16:3001", "http://localhost:3001"],
     credentials: true,
   })
 );
 //Initialize cookie secret
-app.use(session({ secret: "sectr", resave: true, saveUninitialized: true }));
+app.use(session({ secret: "sectr", resave: true, saveUninitialized: false }));
 app.use(cookieParser("sectr"));
 //Passport Middleware
 app.use(passport.initialize());
