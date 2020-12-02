@@ -40,15 +40,31 @@ const config = {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-//Cors
+app.use(cors({ origin: true, credentials: true }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+  );
+  if ("OPTIONS" == req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+});
+
+//Initialize cookie secret
 app.use(
-  cors({
-    origin: ["http://10.11.140.16:3001", "http://localhost:3001"],
-    credentials: true,
+  session({
+    secret: "sectr",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { sameSite: "none", secure: false },
   })
 );
-//Initialize cookie secret
-app.use(session({ secret: "sectr", resave: true, saveUninitialized: false }));
 app.use(cookieParser("sectr"));
 //Passport Middleware
 app.use(passport.initialize());
@@ -57,17 +73,21 @@ require("./passportConfig")(passport);
 
 //Routes -------------------------------------------------------------
 app.post("/login", async (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log("Authernticated User (stored to session) : ", req.user);
-      });
-    }
-  })(req, res, next);
+  try {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) throw err;
+      if (!user) res.send("No User Exists");
+      else {
+        req.logIn(user, (err) => {
+          if (err) throw err;
+          res.send("Successfully Authenticated");
+          console.log("Authernticated User (stored to session) : ", req.user);
+        });
+      }
+    })(req, res, next);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 app.get("/logout", function (req, res) {

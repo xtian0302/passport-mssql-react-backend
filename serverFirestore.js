@@ -41,7 +41,14 @@ app.use(
   })
 );
 //Initialize cookie secret
-app.use(session({ secret: "sectr", resave: true, saveUninitialized: true }));
+app.use(
+  session({
+    secret: "sectr",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { sameSite: "none", secure: true },
+  })
+);
 app.use(cookieParser("sectr"));
 //Passport Middleware
 app.use(passport.initialize());
