@@ -98,6 +98,10 @@ app.get("/getUser", async (req, res) => {
   res.send(req.user); //req.user stores the user session that has been authenticated
 });
 
+app.get("/freeget", async (req, res) => {
+  res.send("this is free!"); //req.user stores the user session that has been authenticated
+});
+
 //Start Web Service
 app.listen(() => {
   console.log("Auth Server started  !");
