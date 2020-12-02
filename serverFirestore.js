@@ -99,6 +99,6 @@ app.get("/getUser", async (req, res) => {
 });
 
 //Start Web Service
-app.listen(apiPort, () => {
-  console.log("Auth Server started at port : ", apiPort);
+app.listen(() => {
+  console.log("Auth Server started  !");
 });
