@@ -103,6 +103,11 @@ app.get("/freeget", async (req, res) => {
 });
 
 //Start Web Service
-app.listen(() => {
-  console.log("Auth Server started  !");
+app.listen(process.env.PORT || apiPort, () => {
+  console.log(
+    "Auth Server started at !",
+    apiPort,
+    " or at :",
+    process.env.PORT
+  );
 });
