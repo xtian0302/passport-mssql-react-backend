@@ -1,6 +1,6 @@
 //const mongoose = require("mongoose");
 const admin = require("firebase-admin");
-//const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
+const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
@@ -9,44 +9,49 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 let apiPort = 4000;
 
 const app = express();
 
-//initialize Firestore
+// //initialize Firestore
+// admin.initializeApp({
+//   credential: admin.credential.cert(
+//     JSON.parse(
+//       Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString("ascii")
+//     )
+//   ),
+// });
 admin.initializeApp({
-  credential: admin.credential.cert(
-    JSON.parse(
-      Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString("ascii")
-    )
-  ),
+  credential: admin.credential.cert(serviceAccount),
 });
-
 const db = admin.firestore();
 //Middleware -------------------------------------------------------------
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //Cors
-app.use(
-  cors({
-    origin: [
-      "http://10.11.140.16:3001",
-      "http://localhost:3001",
-      "https://5fc6a12c6c3c5648bb10f34e--xtian0302.netlify.app/login",
-      "https://5fc6a12c6c3c5648bb10f34e--xtian0302.netlify.app/register",
-      "https://5fc6a12c6c3c5648bb10f34e--xtian0302.netlify.app",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({ origin: true, credentials: true }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+  );
+  if ("OPTIONS" == req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+});
 //Initialize cookie secret
 app.use(
   session({
     secret: "sectr",
     resave: true,
     saveUninitialized: true,
-    cookie: { sameSite: "none", secure: true },
   })
 );
 app.use(cookieParser("sectr"));
@@ -72,6 +77,15 @@ app.post("/login", async (req, res, next) => {
 app.get("/logout", function (req, res) {
   req.logout();
   res.send("logout success");
+});
+
+app.get("/getInsult", async (req, res) => {
+  await axios({
+    method: "GET",
+    url: "https://insult.mattbas.org/api/insult",
+  }).then(async (result) => {
+    res.send(result.data);
+  });
 });
 
 app.post("/register", async (req, res) => {
@@ -102,13 +116,24 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/getUser", async (req, res) => {
+  //res.json(req.session.user); //use this while passport is broken. or deploy same site with heroku
   res.send(req.user); //req.user stores the user session that has been authenticated
 });
 
-app.get("/freeget", async (req, res) => {
-  res.send("this is free!"); //req.user stores the user session that has been authenticated
+app.get("/getChartData", async (req, res) => {
+  res.send({
+    datasetname: "this is le dataseto",
+    labels: ["A", "B", "C"],
+    data: [1, 2, 3],
+  }); //req.user stores the user session that has been authenticated
 });
-
+app.get("/getMapPosition", async (req, res) => {
+  res.send({
+    zoom: 12,
+    position: [14.5386049, 120.9812023],
+    label: "Hello World",
+  }); //req.user stores the user session that has been authenticated
+});
 //Start Web Service
 app.listen(process.env.PORT || apiPort, () => {
   console.log(

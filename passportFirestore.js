@@ -1,27 +1,27 @@
 const admin = require("firebase-admin");
-//const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
+const serviceAccount = require("./dev-test-25bc6-firebase-adminsdk-hxe8h-af23768f71.json");
 const bcrypt = require("bcrypt");
 const localStrategy = require("passport-local").Strategy;
 
-//initialize Firestore
-// admin.initializeApp(
-//   {
-//     credential: admin.credential.cert(serviceAccount),
-//   },
-//   "firestorePassport"
-// );
+// initialize Firestore
 admin.initializeApp(
   {
-    credential: admin.credential.cert(
-      JSON.parse(
-        Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString(
-          "ascii"
-        )
-      )
-    ),
+    credential: admin.credential.cert(serviceAccount),
   },
   "firestorePassport"
 );
+// admin.initializeApp(
+//   {
+//     credential: admin.credential.cert(
+//       JSON.parse(
+//         Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64").toString(
+//           "ascii"
+//         )
+//       )
+//     ),
+//   },
+//   "firestorePassport"
+// );
 const db = admin.firestore();
 
 //implement strategy

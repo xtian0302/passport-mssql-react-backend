@@ -62,7 +62,7 @@ app.use(
     secret: "sectr",
     resave: true,
     saveUninitialized: true,
-    cookie: { sameSite: "none", secure: false },
+    cookie: { sameSite: "none", secure: true },
   })
 );
 app.use(cookieParser("sectr"));
